@@ -48,12 +48,28 @@ void addlast(node* yeninode, node*& list) {
     }
 }
 
+node* locate(int arananID, node* list) {
+    node* yer = NULL;
+
+    while (list != NULL) {
+        if (list->data.id == arananID) {
+            yer = list;
+            break;
+        }
+        else {
+            list = list->link;
+        }
+    }
+
+    return yer;
+}
+
 void kayitEkle() {
     node* yeninode = newnode();
 
     yeninode->data.id = sonrakiID++;
 
-    cout << "\n***** YENÝ MÜÞTERÝ EKLE *****\n";
+    cout << "\n========== YENÝ MÜÞTERÝ EKLE ==========\n";
 
     cout << "Ad: ";
     cin >> yeninode->data.ad;
@@ -93,7 +109,7 @@ void kayitListele() {
         return;
     }
 
-    cout << "\n***** MÜÞTERÝ LÝSTESÝ *****\n";
+    cout << "\n========== MÜÞTERÝ LÝSTESÝ ==========\n";
 
     while (p != NULL) {
         cout << "\nID: " << p->data.id;
@@ -112,10 +128,131 @@ void kayitListele() {
     }
 }
 
+void kayitAra() {
+    if (list == NULL) {
+        cout << "\nListe boþ.\n";
+        return;
+    }
+
+    int arananID;
+
+    cout << "\nAranacak müþteri ID: ";
+    cin >> arananID;
+
+    node* bulunan = locate(arananID, list);
+
+    if (bulunan == NULL) {
+        cout << "\nKayýt bulunamadý.\n";
+    }
+    else {
+        cout << "\n========== KAYIT BULUNDU ==========\n";
+        cout << "ID: " << bulunan->data.id << endl;
+        cout << "Ad Soyad: "
+             << bulunan->data.ad
+             << " "
+             << bulunan->data.soyad
+             << endl;
+        cout << "Telefon: " << bulunan->data.telefon << endl;
+        cout << "Adres: " << bulunan->data.adres << endl;
+        cout << "Stok Adedi: " << bulunan->data.stokAdet << endl;
+        cout << "Borçlu Damacana Adedi: " << bulunan->data.borcAdet << endl;
+        cout << "Birim Fiyat: " << bulunan->data.birimFiyat << " TL" << endl;
+        cout << "Toplam Borç: "
+             << bulunan->data.borcAdet * bulunan->data.birimFiyat
+             << " TL"
+             << endl;
+    }
+}
+
+void kayitGuncelle() {
+    if (list == NULL) {
+        cout << "\nListe boþ.\n";
+        return;
+    }
+
+    int id;
+
+    cout << "\nGüncellenecek müþteri ID: ";
+    cin >> id;
+
+    node* bulunan = locate(id, list);
+
+    if (bulunan == NULL) {
+        cout << "\nKayýt bulunamadý.\n";
+        return;
+    }
+
+    cout << "\n========== KAYIT GÜNCELLE ==========\n";
+
+    cout << "Yeni Ad: ";
+    cin >> bulunan->data.ad;
+
+    cout << "Yeni Soyad: ";
+    cin >> bulunan->data.soyad;
+
+    cout << "Yeni Telefon: ";
+    cin >> bulunan->data.telefon;
+
+    cin.ignore();
+
+    cout << "Yeni Adres: ";
+    cin.getline(bulunan->data.adres, 100);
+
+    cout << "Yeni Stok Adedi: ";
+    cin >> bulunan->data.stokAdet;
+
+    cout << "Yeni Borçlu Damacana Adedi: ";
+    cin >> bulunan->data.borcAdet;
+
+    cout << "Yeni Birim Fiyat: ";
+    cin >> bulunan->data.birimFiyat;
+
+    cout << "\nKayýt baþarýyla güncellendi.\n";
+}
+
+void kayitSil() {
+    if (list == NULL) {
+        cout << "\nListe boþ.\n";
+        return;
+    }
+
+    int id;
+
+    cout << "\nSilinecek müþteri ID: ";
+    cin >> id;
+
+    node* silinecek = locate(id, list);
+
+    if (silinecek == NULL) {
+        cout << "\nKayýt bulunamadý.\n";
+        return;
+    }
+
+    if (silinecek == list) {
+        list = list->link;
+        delete silinecek;
+    }
+    else {
+        node* p = list;
+
+        while (p->link != silinecek) {
+            p = p->link;
+        }
+
+        p->link = silinecek->link;
+        delete silinecek;
+    }
+
+    cout << "\nKayýt baþarýyla silindi.\n";
+}
+
 void menuYazdir() {
     cout << "\n*** HAZIR SU STOK MÜÞTERÝ TAKÝP SÝSTEMÝ ***";
     cout << "\n1- Kayýt Ekle";
     cout << "\n2- Kayýtlarý Listele";
+    cout << "\n3- Kayýt Ara";
+    cout << "\n4- Kayýt Güncelle";
+    cout << "\n5- Kayýt Sil";
     cout << "\n0- Çýkýþ";
     cout << "\n\nSeçiminiz: ";
 }
@@ -138,6 +275,18 @@ int main() {
 
             case 2:
                 kayitListele();
+                break;
+
+            case 3:
+                kayitAra();
+                break;
+
+            case 4:
+                kayitGuncelle();
+                break;
+
+            case 5:
+                kayitSil();
                 break;
 
             case 0:
